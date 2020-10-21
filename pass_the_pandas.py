@@ -32,6 +32,7 @@ def game_setup():
         player4 = Player(player4,dice_count)
         player5 = input("Please input player 5 name\n")
         player5 = Player(player5,dice_count)
+        players = [player1, player2, player3, player4, player5]
 
     elif player_count == 4:
         dice_count = 5
@@ -43,7 +44,7 @@ def game_setup():
         player3 = Player(player3,dice_count)
         player4 = input("Please input player 4 name\n")
         player4 = Player(player4,dice_count)
-        player5 = Player('null', 1)
+        players = [player1, player2, player3, player4]
 
     elif player_count == 3:
         dice_count = 6
@@ -53,8 +54,7 @@ def game_setup():
         player2 = Player(player2,dice_count)
         player3 = input("Please input player 3 name\n")
         player3 = Player(player3,dice_count)
-        player4 = Player('null', 1)
-        player5 = Player('null', 1)
+        players = [player1, player2, player3]
 
     elif player_count == 2:
         dice_count = 6
@@ -62,29 +62,27 @@ def game_setup():
         player1 = Player(player1,dice_count)
         player2 = input("Please input player 2 name\n")
         player2 = Player(player2,dice_count)
-        player3 = Player('null', 1)
-        player4 = Player('null', 1)
-        player5 = Player('null', 1)
+        players = [player1, player2]
 
     elif player_count > 5:
         print("Too many players")
     else:
         print("Too few players")
 
-    players = [player1, player2, player3, player4, player5]
-    return(player_count, dice_count, player1, player2, player3, player4, player5, players)
+    return(player_count, dice_count, players)
 
     # print(r.randint(1,4))
-def dice_logic(player_count, dice_count, player1, player2, player3, player4, player5, players):
+def dice_logic(player_count, dice_count, players):
 
     turn = 0
     bamboo_round = 0
     bamboo_on = False
     carryover = 0
-    old_bamboo=0
+    old_bamboo = 0
+    game_end = False
 
 
-    while player1.dice > 0 and player2.dice > 0 and player3.dice > 0 and player4.dice > 0 and player5.dice > 0 :
+    while game_end == False:
         water = 0
 
         if players[turn].name == 'null':
@@ -216,31 +214,20 @@ def bamboo_logic(old_bamboo, new_bamboo,player_turn, players, turn, player_count
         pass
 
 def main():
-    # player1=Player('Joshua', 4)
-    # player2=Player('Danielle', 5)
-    # player3=Player('null',4)
-    # player4=Player('null',5)
-    # player_count = 2
-    #
-    # player = player2
-    # players = [player1, player2,player3,player4]
-    # active_players = players[:player_count]
-    # for person in active_players:
-    #     print(person.name)
-
-    # old_bamboo = 4
-    # new_bamboo = 3
-    # turn = 1
-    # bamboo_logic(old_bamboo,new_bamboo,player, players, turn)
-    # print(player.name, player.dice)
-    # player = input('Please choose player to give panda to\n')
-    # if player.lower() == player1.name.lower():
-    #     player1.dice -= 1
-    #     print("WOWZA")
-    # print(player1.dice)
-
-    player_count, dice_count, player1, player2, player3, player4, player5, players= game_setup()
-    dice_logic(player_count, dice_count, player1, player2, player3, player4, player5, players)
+    game_end = False
+    # player_count, dice_count, players= game_setup()
+    player1=Player('Joshua', 4)
+    player2=Player('Danielle', 5)
+    players = [player1, player2]
+    player=player1
+    while game_end == False:
+        for player in players:
+            if player.dice == 0:
+                game_end = True
+        print("GAME STILL GOES")
+        print(player.dice)
+        player.dice -=1
+    # dice_logic(player_count, dice_count, players)
 
 if __name__ == '__main__':
     main()
