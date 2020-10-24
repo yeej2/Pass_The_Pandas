@@ -1,6 +1,7 @@
 import random as r
 import time
-
+import msvcrt as m
+from art import *
 
 dict={1:"Blank", 2:"Bamboo", 3:"Water", 4:"Blank", 5:"Panda", 6:"Blank"}
 
@@ -15,6 +16,75 @@ class Player :
     def showInfo(self):
         print ("Name: ", self.name)
         print ("Dice: ", self.dice)
+
+def wait():
+    m.getch()
+
+def rules():
+    print("\nScroll down for the rules. Press any key to \n")
+    print("""\
+             ______________________________________________________________________________________________
+            |Object of the Game:                                                                           |
+            |Try to be the first player to get rid of all of your dice.                                    |
+            |______________________________________________________________________________________________|
+            |                                                                                              |
+            |Set Up:                                                                                       |
+            |Each player starts with four to six dice, depending on the number of players:                 |
+            |         _______________                                                                      |
+            |Players:| 2 | 3 | 4 | 5 |                                                                     |
+            |         ----------------                                                                     |
+            |Dice:   | 6 | 6 | 5 | 4 |                                                                     |
+            |______________________________________________________________________________________________|
+            |                                                                                              |
+            |About the Dice:                                                                               |
+            |Each of the dice in the game contains six sides. Of these six sides, three show images (one   |
+            |Panda, one Bamboo, and one Water Drop), and the other three are blank. Each image on the      |
+            |die corresponds to an action taken by the player who rolled it. See Game Play for details on  |
+            |each of these actions.                                                                        |
+            |                                                                                              |
+            |______________________________________________________________________________________________|
+            |                                                                                              |
+            |Game Play:                                                                                    |
+            |Players take turns rolling the dice. Each turn should follow the order of operations listed   |
+            |below, in sequential order:                                                                   |
+            |                                                                                              |
+            |1. Roll all of your dice.                                                                     |
+            |                                                                                              |
+            |2. Remove any Water Drops you rolled from the game. Since water evaporates, all Water         |
+            | Drops rolled are immediately removed from the game and placed off to the side or in the box. |
+            |                                                                                              |
+            |3. Pass any Pandas you rolled to other players. Players who roll a Panda give that die to     |
+            | any other player of their choice. If multiple Pandas are rolled, those dice can all be given |
+            | to the same player, or split amongst multiple players in any manner.                         |
+            |                                                                                              |
+            |4. Set aside Bamboo for the Bamboo Challenge. Compare the number of Bamboo you rolled         |
+            | with the previous player. If they have more bamboo than you, they must pass you the          |
+            | difference (see Bamboo Challenge, below).                                                    |
+            |                                                                                              |
+            |5. Keep all Blank dice. When a player rolls a blank, no action is taken for that die.         |
+            |Note: Remember that on every turn, players re-roll all of their dice. Play continues until    |
+            |one player no longer has dice at the end of their turn or the end of another player’s turn.   |
+            |                                                                                              |
+            |______________________________________________________________________________________________|
+            |                                                                                              |
+            |Ending the Game:                                                                              |
+            |The game is over if any player has no dice left at either the end of their own turn, or at the|
+            |end of another player’s turn (because they have given the last of their bamboo away on another|
+            |player’s turn). Players may choose to play for second, third, and fourth places.              |
+            |                                                                                              |
+            |______________________________________________________________________________________________|
+            |                                                                                              |
+            |Bamboo Challenge:                                                                             |
+            |Each player must roll at least the same number of Bamboo as the previous player. If a player  |
+            |does not meet this challenge, then the previous player will give that player the difference.  |
+            |A turn is not over until the Bamboo Challenge is settled.                                     |
+            |                                                                                              |
+            |______________________________________________________________________________________________|
+
+    """)
+    print("\nPress any key to continue ...\n")
+    wait()
+
 
 def game_setup():
     player_count = int(input("How many players do you have?\n"))
@@ -100,7 +170,7 @@ def dice_logic(player_count, dice_count, player1, player2, player3, player4, pla
     while game_end == False:
         water = 0
 
-        if players[turn].name == 'null':
+        if turn >= len(active_players):
             turn = 0
             # print("RESET")
         if turn == 0:
@@ -118,8 +188,14 @@ def dice_logic(player_count, dice_count, player1, player2, player3, player4, pla
         dice_temp = []
         x=0
 
-        input("\n\n{0} ROLL THE DICE!!!!\n".format(player_turn.name.upper()))
+        if old_bamboo > 0:
+            print(player_turn.name, ", you need to roll", old_bamboo, "bamboo to avoid gaining dice!")
+        print("\n\n{0} ROLL THE DICE!!!!\n".format(player_turn.name.upper()))
+        wait()
         while x < player_turn.dice:
+            # if player_turn.name.lower() == "joshua":
+            #     dice_values.append(r.randint(5,5))
+            # else:
             dice_values.append(r.randint(1,6))
             x+=1
         for values in dice_values:
@@ -202,12 +278,31 @@ def dice_logic(player_count, dice_count, player1, player2, player3, player4, pla
 
         # print("\n",player_turn.name,"now has", player_turn.dice, "dice\n")
         turn +=1
-    print("\n *********** ", winner.upper(), " IS THE WINNER **************")
+    congrats()
+    winning_name(winner)
+    # print("\n *********** ", winner.upper(), " IS THE WINNER **************")
         # print(dice)
     # for die in dice:
     #     print(die)
     #     time.sleep(.4)
 
+def congrats():
+    print("""\
+    _______      ,-----.    ,---.   .--.  .-_'''-.   .-------.       ____   ,---------.   .-'''-.
+   /   __  \   .'  .-,  '.  |    \  |  | '_( )_   \  |  _ _   \    .'  __ `.\          \ / _     \\
+  | ,_/  \__) / ,-.|  \ _ \ |  ,  \ |  ||(_ o _)|  ' | ( ' )  |   /   '  \  \`--.  ,---'(`' )/`--'
+,-./  )      ;  \  '_ /  | :|  |\_ \|  |. (_,_)/___| |(_ o _) /   |___|  /  |   |   \  (_ o _).
+\  '_ '`)    |  _`,/ \ _/  ||  _( )_\  ||  |  .-----.| (_,_).' __    _.-`   |   :_ _:   (_,_). '.
+ > (_)  )  __: (  '\_/ \   ;| (_ o _)  |'  \  '-   .'|  |\ \  |  |.'   _    |   (_I_)  .---.  \  :
+(  .  .-'_/  )\ `"/  \  ) / |  (_,_)\  | \  `-'`   | |  | \ `'   /|  _( )_  |  (_(=)_) \    `-'  |
+ `-'`-'     /  '. \_/``".'  |  |    |  |  \        / |  |  \    / \ (_ o _) /   (_I_)   \       /
+   `._____.'     '-----'    '--'    '--'   `'-...-'  ''-'   `'-'   '.(_,_).'    '---'    `-...-'
+
+    """)
+
+def winning_name(winner):
+    winner_final = winner.upper() + " YOU WIN"
+    tprint(winner_final, 'fantasy')
 
 def bamboo_logic(old_bamboo, new_bamboo,player_turn, players, turn, player_count):
     # players=[i for i in players.name if i != 'null']
@@ -235,6 +330,29 @@ def bamboo_logic(old_bamboo, new_bamboo,player_turn, players, turn, player_count
         time.sleep(1)
         pass
 
+def welcome():
+    print("""\
+.--.      .--.    .-''-.    .---.        _______      ,-----.    ,---.    ,---.    .-''-.          ,---------.    ,-----.
+|  |_     |  |  .'_ _   \   | ,_|       /   __  \   .'  .-,  '.  |    \  /    |  .'_ _   \         \          \ .'  .-,  '.
+| _( )_   |  | / ( ` )   ',-./  )      | ,_/  \__) / ,-.|  \ _ \ |  ,  \/  ,  | / ( ` )   '         `--.  ,---'/ ,-.|  \ _ \\
+|(_ o _)  |  |. (_ o _)  |\  '_ '`)  ,-./  )      ;  \  '_ /  | :|  |\_   /|  |. (_ o _)  |            |   \  ;  \  '_ /  | :
+| (_,_) \ |  ||  (_,_)___| > (_)  )  \  '_ '`)    |  _`,/ \ _/  ||  _( )_/ |  ||  (_,_)___|            :_ _:  |  _`,/ \ _/  |
+|  |/    \|  |'  \   .---.(  .  .-'   > (_)  )  __: (  '\_/ \   ;| (_ o _) |  |'  \   .---.            (_I_)  : (  '\_/ \   ;
+|  '  /\  `  | \  `-'    / `-'`-'|___(  .  .-'_/  )\ `"/  \  ) / |  (_,_)  |  | \  `-'    /           (_(=)_)  \ `"/  \  ) /
+|    /  \    |  \       /   |        \`-'`-'     /  '. \_/``".'  |  |      |  |  \       /             (_I_)    '. \_/``".'
+`---'    `---`   `'-..-'    `--------`  `._____.'     '-----'    '--'      '--'   `'-..-'              '---'      '-----'
+.-------.    ____       .-'''-.    .-'''-.         ,---------. .---.  .---.     .-''-.          .-------.    ____    ,---.   .--. ______        ____       .-'''-.
+\  _(`)_ \ .'  __ `.   / _     \  / _     \        \          \|   |  |_ _|   .'_ _   \         \  _(`)_ \ .'  __ `. |    \  |  ||    _ `''.  .'  __ `.   / _     \\
+| (_ o._)|/   '  \  \ (`' )/`--' (`' )/`--'         `--.  ,---'|   |  ( ' )  / ( ` )   '        | (_ o._)|/   '  \  \|  ,  \ |  || _ | ) _  \/   '  \  \ (`' )/`--'
+|  (_,_) /|___|  /  |(_ o _).   (_ o _).               |   \   |   '-(_{;}_). (_ o _)  |        |  (_,_) /|___|  /  ||  |\_ \|  ||( ''_'  ) ||___|  /  |(_ o _).
+|   '-.-'    _.-`   | (_,_). '.  (_,_). '.             :_ _:   |      (_,_) |  (_,_)___|        |   '-.-'    _.-`   ||  _( )_\  || . (_) `. |   _.-`   | (_,_). '.
+|   |     .'   _    |.---.  \  :.---.  \  :            (_I_)   | _ _--.   | '  \   .---.        |   |     .'   _    || (_ o _)  ||(_    ._) '.'   _    |.---.  \  :
+|   |     |  _( )_  |\    `-'  |\    `-'  |           (_(=)_)  |( ' ) |   |  \  `-'    /        |   |     |  _( )_  ||  (_,_)\  ||  (_.\.' / |  _( )_  |\    `-'  |
+/   )     \ (_ o _) / \       /  \       /             (_I_)   (_{;}_)|   |   \       /         /   )     \ (_ o _) /|  |    |  ||       .'  \ (_ o _) / \       /
+`---'      '.(_,_).'   `-...-'    `-...-'              '---'   '(_,_) '---'    `'-..-'          `---'      '.(_,_).' '--'    '--''-----'`     '.(_,_).'   `-...-'
+
+""")
+
 def main():
     # player1=Player('Joshua', 4)
     # player2=Player('Danielle', 5)
@@ -259,6 +377,11 @@ def main():
     #     print("WOWZA")
     # print(player1.dice)
 
+    welcome()
+    time.sleep(3)
+    rule = input('would you like to see the rules?\n')
+    if 'y' in rule:
+        rules()
     player_count, dice_count, player1, player2, player3, player4, player5, players= game_setup()
     dice_logic(player_count, dice_count, player1, player2, player3, player4, player5, players)
 
